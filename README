@@ -9,3 +9,5 @@ Type:  perldoc svn2git
 PREREQUISITES:
 
 Perl 5.4 and up
+git
+git-svn
