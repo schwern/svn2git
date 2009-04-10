@@ -18,7 +18,7 @@ GetOptions(
 
 $Opts{clone} = 1 unless exists $Opts{clone};
 
-main(shift);
+main(@ARGV);
 
 sub main {
     my $url = shift;
