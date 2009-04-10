@@ -1,0 +1,104 @@
+#!/usr/bin/perl -w
+
+# A reimplmentation of svn2git as a single file Perl program.
+
+# This copied shamelessly from James Coglan's Ruby svn2git
+# but I found the process of having to make a gem and all
+# that too much work for what's basically a short script.
+
+use Getopt::Long;
+
+my %Opts;
+GetOptions(
+    \%Opts,
+    "trunk:s", "branches:s", "tags:s", "authors:s",
+    "clone!",
+    "verbose|v",
+);
+
+$Opts{clone} = 1 unless exists $Opts{clone};
+
+main(shift);
+
+sub main {
+    my $url = shift;
+
+    clone($url);
+    fix_tags();
+    fix_branches();
+    fix_trunk();
+}
+
+sub run {
+    print "@_\n" if $Opts{verbose};
+    system @_;
+
+    my $exit = $? >>8;
+    die "@_ exited with $exit" if $exit;
+
+    return 1;
+}
+
+sub clone {
+    my $url = shift;
+    return unless $Opts{clone};
+
+    die "Usage: $0 [options] url\n" unless $url;
+
+    print "Cloning svn repo at $url\n";
+
+    my @clone = qw(git svn init --no-metadata);
+
+    my @clone_opts;
+    for my $opt (qw(trunk branches tags)) {
+        push @clone_opts, "--$opt=$Opts{$opt}" if exists $Opts{$opt};
+    }
+
+    push @clone_opts, "-s" unless @clone_opts;
+
+    run( @clone, @clone_opts, $url);
+    run("git", "config", "svn.authorsfile", $Opts{authors}) if $Opts{authors};
+    run("git", "svn", "fetch");
+
+    return 1;
+}
+
+sub fix_tags {
+    my @branches = map { s/^\s+//; s/\s+$//; $_ } `git branch -a`;
+    my @tags     = grep m{^tags/}, @branches;
+
+    print "Turning tag branches into git tags\n";
+
+    for my $branch (@tags) {
+        my($tag) = $branch =~ m{^tags/(.*)};
+        run("git", "checkout", $branch);
+        run("git", "tag", $tag);
+    }
+}
+
+sub fix_branches {
+    my @remotes = grep !m{^tags/}, map { s/^\s+//; s/\s+$//; $_ } `git branch -r`;
+
+    print "Turning remote branches into locals.\n";
+
+    my $trunk = $Opts{trunk} || "trunk";
+    for my $remote (@remotes) {
+        next if $remote eq $trunk;
+
+        run("git", "co", $remote);
+        run("git", "co", "-b", $remote);
+    }
+}
+
+sub fix_trunk {
+    my $trunk = $Opts{trunk} || "trunk";
+
+    return unless grep /^\s*\Q$trunk\E\s*/, `git branch -r`;
+
+    print "Making sure master is trunk.\n";
+
+    run("git", "branch", "-D", "master");
+    run("git", "checkout", $trunk);
+    run("git", "checkout", "-f", "-b", "master");
+}
+
