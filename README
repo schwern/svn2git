@@ -1,0 +1,11 @@
+To use, simply copy into your bin directory.
+
+
+DOCUMENTATION:
+
+Type:  perldoc svn2git
+
+
+PREREQUISITES:
+
+Perl 5.4 and up
