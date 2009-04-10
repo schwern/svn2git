@@ -116,6 +116,8 @@ sub main {
     my $url = shift;
 
     clone($url);
+
+    git_sanity();
     fix_tags();
     fix_branches();
     fix_trunk();
@@ -136,6 +138,8 @@ sub clone {
     return unless $Opts{clone};
 
     die "Usage: $0 [options] url\nperldoc $0 for documentation\n" unless $url;
+
+    git_svn_sanity();
 
     print "Cloning svn repo at $url\n";
 
@@ -194,3 +198,14 @@ sub fix_trunk {
     run("git", "checkout", "-f", "-b", "master");
 }
 
+
+sub git_sanity {
+    `git --version`;
+    die "git --version didn't work.  Is git installed?\n" if $?;
+}
+
+
+sub git_svn_sanity {
+    `git svn --version`;
+    die "git svn --version didn't work.  Is git-svn installed?\n" if $?;
+}
