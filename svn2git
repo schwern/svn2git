@@ -18,6 +18,96 @@ GetOptions(
 
 $Opts{clone} = 1 unless exists $Opts{clone};
 
+
+=head1 NAME
+
+svn2git - Convert SVN repositories to GIT
+
+=head1 SYNOPSIS
+
+    svn2git [--verbose|v]
+            [--noclone]
+            [--authors=AUTHORS_FILE]
+            [--trunk=TRUNK_PATH] [--branches=BRANCHES_PATH] [--tags=TAGS_PATH]
+            SVN_URL
+
+=head1 DESCRIPTION
+
+svn2git converts a Subversion project into a git repository.  It uses
+git-svn to do the bulk of the conversion, but does a little extra work
+to convert the Subversion way of doing things into the git way.
+
+* Subversion tag branches become git tags.
+* Local branches are made for each remote Subversion branch.
+* master is assured to be trunk.
+
+Once done, your new repository is ready to be used.  You can push it
+to a new remote origin like so...
+
+  git remote add origin <git_remote_url>
+  git push origin --all
+  git push origin --tags
+
+
+=head2 Switches
+
+=head3 --verbose
+
+=head3 -v
+
+If either -v or --verbose is given, svn2git will output each command
+before it runs it.
+
+=head3 --noclone
+
+Skip the step of cloning the SVN repository.  This is useful when you
+just want to convert the tags on a git repository you'd previously
+cloned using git-svn.
+
+=head3 --authors
+
+The location of the authors file to use for the git-svn clone.  See
+L<git-svn>'s -A option for details.
+
+=head3 --trunk
+
+=head3 --branches
+
+=head3 --tags
+
+These tell svn2git about the layout of your repository; what subdirs
+contain the trunk, branches and tags respectively.  If none are given
+a standard Subversion layout is assumed.
+
+
+=head1 EXAMPLES
+
+Convert a SVN project.
+
+    svn2git http://svn.example.com/some-project
+
+Convert the tags on an existing git-svn project
+
+    cd some-git-svn-project
+    svn2git --noclone
+
+
+=head1 AUTHOR
+
+Michael G Schwern <schwern@pobox.com>
+
+
+=head1 SEE ALSO
+
+L<git>, L<git-svn>
+
+The original Ruby svn2git from which I took the idea.
+L<http://github.com/jcoglan/svn2git/>
+
+
+=cut
+
+
 main(@ARGV);
 
 sub main {
