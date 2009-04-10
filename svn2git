@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 # A reimplmentation of svn2git as a single file Perl program.
 
@@ -38,7 +38,9 @@ git-svn to do the bulk of the conversion, but does a little extra work
 to convert the Subversion way of doing things into the git way.
 
 * Subversion tag branches become git tags.
+
 * Local branches are made for each remote Subversion branch.
+
 * master is assured to be trunk.
 
 Once done, your new repository is ready to be used.  You can push it
@@ -133,7 +135,7 @@ sub clone {
     my $url = shift;
     return unless $Opts{clone};
 
-    die "Usage: $0 [options] url\n" unless $url;
+    die "Usage: $0 [options] url\nperldoc $0 for documentation\n" unless $url;
 
     print "Cloning svn repo at $url\n";
 
