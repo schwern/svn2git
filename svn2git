@@ -173,7 +173,9 @@ sub fix_tags {
 }
 
 sub fix_branches {
-    my @remotes = grep !m{^tags/}, map { s/^\s+//; s/\s+$//; $_ } `git branch -r`;
+    my $tags = $Opts{tags} || 'tags/';
+    $tags .= '/' unless $tags =~ m{/$};
+    my @remotes = grep !m{^\Q$tags}, map { s/^\s+//; s/\s+$//; $_ } `git branch -r`;
 
     print "Turning remote branches into locals.\n";
 
