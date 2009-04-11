@@ -181,8 +181,8 @@ sub fix_branches {
     for my $remote (@remotes) {
         next if $remote eq $trunk;
 
-        run("git", "co", $remote);
-        run("git", "co", "-b", $remote);
+        run("git", "checkout", $remote);
+        run("git", "checkout", "-b", $remote);
     }
 }
 
