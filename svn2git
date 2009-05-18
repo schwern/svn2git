@@ -13,6 +13,7 @@ GetOptions(
     \%Opts,
     "trunk:s", "branches:s", "tags:s", "authors:s",
     "clone!",
+    "strip-tag-prefix:s",
     "verbose|v",
 );
 
@@ -81,6 +82,11 @@ These tell svn2git about the layout of your repository; what subdirs
 contain the trunk, branches and tags respectively.  If none are given
 a standard Subversion layout is assumed.
 
+=head3 --strip-tag-prefix
+
+strip tag name prefix.
+
+  svn2git --strip-tag-prefix 'release-' http://svn.example.com/some-project
 
 =head1 EXAMPLES
 
@@ -169,6 +175,9 @@ sub fix_tags {
 
     for my $branch (@tags) {
         my($tag) = $branch =~ m{^\Q$tags/(.*)};
+        if (my $strip = $Opts{'strip-tag-prefix'}) {
+            $tag =~ s{^$strip}{};
+        }
         run("git", "checkout", $branch);
         run("git", "tag", $tag);
     }
