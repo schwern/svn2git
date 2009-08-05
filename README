@@ -8,6 +8,6 @@ Type:  perldoc svn2git
 
 PREREQUISITES:
 
-Perl 5.004 and up
+Perl 5.6.1 and up
 git
 git-svn
