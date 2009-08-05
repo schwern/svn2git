@@ -33,6 +33,7 @@ svn2git - Convert Subversion repositories to git
             [--noclone]
             [--authors=AUTHORS_FILE]
             [--trunk=TRUNK_PATH] [--branches=BRANCHES_PATH] [--tags=TAGS_PATH]
+            [--strip-tag-prefix=TAG_PREFIX]
             SVN_URL
 
 =head1 DESCRIPTION
@@ -87,9 +88,9 @@ a standard Subversion layout is assumed.
 
 =head3 --strip-tag-prefix
 
-strip tag name prefix.
-
-  svn2git --strip-tag-prefix 'release-' http://svn.example.com/some-project
+A prefix to strip off all tags.  For example,
+C<<--strip-tag-prefix=release->> would turn "release-1.2.3" into
+"1.2.3".
 
 =head1 EXAMPLES
 
