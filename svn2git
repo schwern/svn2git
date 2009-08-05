@@ -169,15 +169,24 @@ sub fix_tags {
     my $tags = $Opts{tags} || 'tags/';
     $tags .= '/' unless $tags =~ m{/$};
     my @branches = map { s/^\s+//; s/\s+$//; $_ } `git branch -a`;
-    my @tags     = grep m{^\Q$tags/}, @branches;
+    my @tags     = grep m{^\Q$tags\E}, @branches;
 
     print "Turning tag branches into git tags\n";
 
     for my $branch (@tags) {
-        my($tag) = $branch =~ m{^\Q$tags/(.*)};
+        qx/git show-ref $branch/;
+        if ($?) {
+          warn "Not a valid branch reference: '$branch'. Skipping";
+          next;
+        }
+
+        my($tag) = $branch =~ m{^\Q$tags\E(.*)};
+        warn "Couldn't find tag name from $branch" unless length $tag;
+
         if (my $strip = $Opts{'strip-tag-prefix'}) {
             $tag =~ s{^$strip}{};
         }
+
         run("git", "checkout", $branch);
         run("git", "tag", $tag);
     }
@@ -206,8 +215,8 @@ sub fix_trunk {
 
     print "Making sure master is trunk.\n";
 
-    run("git", "branch", "-D", "master");
     run("git", "checkout", $trunk);
+    run("git", "branch", "-D", "master");
     run("git", "checkout", "-f", "-b", "master");
 }
 
