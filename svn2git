@@ -6,6 +6,7 @@
 # but I found the process of having to make a gem and all
 # that too much work for what's basically a short script.
 
+use 5.006001;
 use strict;
 use warnings;
 use Getopt::Long;
