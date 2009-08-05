@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 
 # A reimplmentation of svn2git as a single file Perl program.
 
@@ -6,6 +6,8 @@
 # but I found the process of having to make a gem and all
 # that too much work for what's basically a short script.
 
+use strict;
+use warnings;
 use Getopt::Long;
 
 my %Opts;
