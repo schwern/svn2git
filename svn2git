@@ -25,7 +25,7 @@ $Opts{clone} = 1 unless exists $Opts{clone};
 
 =head1 NAME
 
-svn2git - Convert SVN repositories to GIT
+svn2git - Convert Subversion repositories to git
 
 =head1 SYNOPSIS
 
