@@ -172,7 +172,7 @@ sub clone {
 sub fix_tags {
     my $tags = $Opts{tags} || 'tags/';
     $tags .= '/' unless $tags =~ m{/$};
-    my @branches = map { s/^\s+//; s/\s+$//; $_ } `git branch -a`;
+    my @branches = map { s/^\s+//; s/\s+$//; $_ } `git branch -r`;
     my @tags     = grep m{^\Q$tags\E}, @branches;
 
     print "Turning tag branches into git tags\n";
