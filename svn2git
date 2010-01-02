@@ -232,6 +232,6 @@ sub git_sanity {
 
 
 sub git_svn_sanity {
-    `git svn --version`;
-    die "git svn --version didn't work.  Is git-svn installed?\n" if $?;
+    `git help svn`;
+    die "git help svn didn't work.  Is git-svn installed?\n" if $?;
 }
